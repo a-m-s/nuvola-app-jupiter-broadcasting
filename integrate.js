@@ -24,6 +24,14 @@
 
 "use strict";
 
+var onYouTubeIframeAPIReady = function() {
+    console.log("ERROR: onYouTubeIframeAPIReady called undefined.");
+};
+
+// The player variables a global for easier debugging.
+var YTplayer = null;
+var SEplayer = null;
+
 (function(Nuvola)
 {
 
@@ -55,6 +63,47 @@ WebApp._onPageReady = function()
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
 
+    var embeddiv = document.getElementById('videoembed');
+    if (!embeddiv) {
+        Nuvola.log ("Error: video not found!");
+        return;
+    }
+
+    var ytframe = embeddiv.querySelector('iframe');
+    if (ytframe) {
+	// This is YouTube content
+	var urlelms = ytframe.src.split('/');
+
+	var videoId = urlelms[urlelms.length-1];
+	var videoWidth = ytframe.width;
+	var videoHeight = ytframe.height;
+
+	// Delete the existing iframe, and create a new one
+	var wrapper = embeddiv.querySelector(".responsive-object-wrapper");
+	wrapper.innerHTML = "<div id='ytnuvola'></div>";
+	
+	onYouTubeIframeAPIReady = function() {
+	    YTplayer = new YT.Player('ytnuvola', {
+		height: videoHeight,
+		width: videoWidth,
+		videoId: videoId});
+	}
+
+	var tag = document.createElement('script');
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    } else {
+	var video = document.getElementById("video_html5_api");
+	if (!video)
+	    video = document.querySelector("video");
+        if (!video) {
+	    Nuvola.log ("Error: video not found!");
+	    return;
+	}
+        SEplayer = video;
+    }
+
     // Start update routine
     this.update();
 }
@@ -67,11 +116,50 @@ WebApp.update = function()
         artist: null,
         album: null,
         artLocation: null,
-        rating: null
+        rating: null,
+        length: null
+    }
+    var state = PlaybackState.UNKNOWN;
+
+    if (YTplayer && YTplayer.getPlayerState) {
+	state = (YTplayer.getPlayerState() == 1
+	         ? PlaybackState.PLAYING
+		 : PlaybackState.PAUSED);
+	track.length = YTplayer.getDuration() * 1000000;
+
+	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
+	    player.setTrackPosition(YTplayer.getCurrentTime() * 1000000);
+	    player.setCanSeek(!!track.length);
+
+	    if (YTplayer.isMuted())
+		player.updateVolume(0);
+	    else
+		player.updateVolume(YTplayer.getVolume() / 100);
+	    player.setCanChangeVolume(true);
+	}
+    } else if (SEplayer && !!SEplayer.readyState) {
+	state = (SEplayer.paused
+		 ? PlaybackState.PAUSED
+	  	 : PlaybackState.PLAYING);
+	track.length = SEplayer.duration * 1000000;
+
+	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
+	    player.setTrackPosition(SEplayer.currentTime * 1000000);
+	    player.setCanSeek(!!SEplayer.duration);
+
+	    if (SEplayer.muted)
+		player.updateVolume(0);
+	    else
+		player.updateVolume(SEplayer.volume);
+	}
+    } else if (SEplayer) {
+        state = PlaybackState.PAUSED;
     }
 
     player.setTrack(track);
-    player.setPlaybackState(PlaybackState.UNKNOWN);
+    player.setPlaybackState(state);
+    player.setCanPause(state == PlaybackState.PLAYING);
+    player.setCanPlay(state == PlaybackState.PAUSED);
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
@@ -80,6 +168,60 @@ WebApp.update = function()
 // Handler of playback actions
 WebApp._onActionActivated = function(emitter, name, param)
 {
+    if (YTplayer) {
+	switch (name) {
+	    case PlayerAction.TOGGLE_PLAY:
+		var state = YTplayer.getPlayerState();
+		if (state != 1 && state != 3)
+		    YTplayer.playVideo();
+		else
+		    YTplayer.pauseVideo();
+		break;
+	    case PlayerAction.PLAY:
+		YTplayer.playVideo();
+		break;
+	    case PlayerAction.PAUSE:
+		YTplayer.pauseVideo();
+		break;
+	    case PlayerAction.STOP:
+		YTplayer.stopVideo();
+		break;
+	    case PlayerAction.SEEK:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+		YTplayer.seekTo(param/1000000, true);
+		break;
+	    case PlayerAction.CHANGE_VOLUME:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+		YTplayer.setVolume(param*100);
+		if (YTplayer.isMuted() && param != 0)
+		    YTplayer.unMute();
+		break;
+	}
+    } else if (SEplayer) {
+	switch (name) {
+	    case PlayerAction.TOGGLE_PLAY:
+		if (SEplayer.paused)
+		    SEplayer.play();
+		else
+		    SEplayer.pause();
+		break;
+	    case PlayerAction.PLAY:
+		SEplayer.play();
+		break;
+	    case PlayerAction.PAUSE:
+		SEplayer.pause();
+		break;
+	    case PlayerAction.STOP:
+		SEplayer.pause();
+		break;
+	    case PlayerAction.SEEK:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+	        SEplayer.currentTime = param/1000000;
+		break;
+	    case PlayerAction.CHANGE_VOLUME:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+		SEplayer.volume = param;
+		if (SEplayer.muted && param != 0)
+		    SEplayer.muted = false;
+		break;
+	}
+    }
 }
 
 WebApp.start();

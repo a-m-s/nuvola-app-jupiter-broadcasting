@@ -63,30 +63,38 @@ WebApp._onPageReady = function()
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
 
-    var embeddiv = document.getElementById('videoembed');
-    if (!embeddiv) {
-        Nuvola.log ("Error: video not found!");
-        return;
+    var ytframe = null;
+    var iframes = document.getElementsByTagName('iframe');
+    for (var i=0; i < iframes.length; i++) {
+        if (iframes[i].src && iframes[i].src.indexOf("youtube.com") >= 0) {
+	    ytframe = iframes[i];
+	    break;
+	}
     }
-
-    var ytframe = embeddiv.querySelector('iframe');
     if (ytframe) {
 	// This is YouTube content
 	var urlelms = ytframe.src.split('/');
 
-	var videoId = urlelms[urlelms.length-1];
+	var videoId = urlelms[urlelms.length-1].split('?')[0];
 	var videoWidth = ytframe.width;
 	var videoHeight = ytframe.height;
 
 	// Delete the existing iframe, and create a new one
-	var wrapper = embeddiv.querySelector(".responsive-object-wrapper");
-	wrapper.innerHTML = "<div id='ytnuvola'></div>";
+	var placeholder = document.createElement("div");
+	placeholder.id = 'ytnuvola';
+        placeholder.className = ytframe.className;
+	placeholder.style.height = ytframe.style.height;
+        placeholder.style.width = ytframe.style.width;
+        placeholder.setAttribute("data-ratio","16:9")
+        ytframe.parentElement.insertBefore(placeholder, ytframe);
+        ytframe.remove();
 	
 	onYouTubeIframeAPIReady = function() {
 	    YTplayer = new YT.Player('ytnuvola', {
 		height: videoHeight,
 		width: videoWidth,
-		videoId: videoId});
+		videoId: videoId,
+	        playerVars: {rel: 0}});
 	}
 
 	var tag = document.createElement('script');

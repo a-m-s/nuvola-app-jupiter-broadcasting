@@ -164,6 +164,19 @@ WebApp.update = function()
         state = PlaybackState.PAUSED;
     }
 
+    var elm = document.querySelector(".thumbnail img");
+    if (elm) {
+      track.artLocation = elm.src;
+
+      var pos = document.title.lastIndexOf("|");
+      if (pos == -1) {
+	  track.title = document.title;
+      } else {
+	  track.title = document.title.substr(0, pos-1).trim();
+	  track.artist = document.title.substr(pos+1).trim();
+      }
+    }
+
     player.setTrack(track);
     player.setPlaybackState(state);
     player.setCanPause(state == PlaybackState.PLAYING);

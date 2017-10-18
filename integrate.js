@@ -45,6 +45,9 @@ var PlayerAction = Nuvola.PlayerAction;
 // Create new WebApp prototype
 var WebApp = Nuvola.$WebApp();
 
+// Delayed seek (for when the video is not yet seekable)
+var delayedSeek = null;
+
 // Initialization routines
 WebApp._onInitWebWorker = function(emitter)
 {
@@ -94,7 +97,10 @@ WebApp._onPageReady = function()
 		height: videoHeight,
 		width: videoWidth,
 		videoId: videoId,
-	        playerVars: {rel: 0}});
+	        playerVars: {
+		  rel: 0,
+		  start: localStorage.getItem(document.URL)
+		}});
 	}
 
 	var tag = document.createElement('script');
@@ -110,6 +116,7 @@ WebApp._onPageReady = function()
 	    return;
 	}
         SEplayer = video;
+        delayedSeek = localStorage.getItem(document.URL);
     }
 
     // Start update routine
@@ -136,6 +143,7 @@ WebApp.update = function()
 	track.length = YTplayer.getDuration() * 1000000;
 
 	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
+	    localStorage.setItem(document.URL, Math.floor(YTplayer.getCurrentTime()));
 	    player.setTrackPosition(YTplayer.getCurrentTime() * 1000000);
 	    player.setCanSeek(!!track.length);
 
@@ -152,8 +160,16 @@ WebApp.update = function()
 	track.length = SEplayer.duration * 1000000;
 
 	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
-	    player.setTrackPosition(SEplayer.currentTime * 1000000);
-	    player.setCanSeek(!!SEplayer.duration);
+	    if (!!SEplayer.duration) {
+		if (delayedSeek) {
+		    SEplayer.currentTime = delayedSeek;
+		    delayedSeek = null;
+		} else
+		    localStorage.setItem(document.URL, Math.floor(SEplayer.currentTime));
+		player.setTrackPosition(SEplayer.currentTime * 1000000);
+		player.setCanSeek(true);
+	    } else
+		player.setCanSeek(false);
 
 	    if (SEplayer.muted)
 		player.updateVolume(0);

@@ -111,13 +111,19 @@ WebApp._onPageReady = function()
 	var video = document.getElementById("video_html5_api");
 	if (!video)
 	    video = document.querySelector("video");
-        if (!video) {
-	    Nuvola.log ("Error: video not found!");
-	    return;
+        if (video) {
+	    SEplayer = video;
+	    delayedSeek = localStorage.getItem(document.URL);
 	}
-        SEplayer = video;
-        delayedSeek = localStorage.getItem(document.URL);
     }
+
+    document.querySelectorAll(".thumbnail a").forEach(function(thumb) {
+	var viewed = thumb.href ? localStorage.getItem(thumb.href + "$percent") : 0;
+        if (!viewed) return;
+	var bar = document.createElement('div');
+	bar.setAttribute("style", "display: block; width: " + viewed + "%; height: 0.5em; border-radius: 4px; background-color: green;");
+        thumb.append(bar);
+    });
 
     // Start update routine
     this.update();
@@ -144,6 +150,8 @@ WebApp.update = function()
 
 	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
 	    localStorage.setItem(document.URL, Math.floor(YTplayer.getCurrentTime()));
+	    if (!!track.length)
+		localStorage.setItem(document.URL + "$percent", Math.floor((YTplayer.getCurrentTime()*1000000/track.length)*100));
 	    player.setTrackPosition(YTplayer.getCurrentTime() * 1000000);
 	    player.setCanSeek(!!track.length);
 
@@ -164,8 +172,11 @@ WebApp.update = function()
 		if (delayedSeek) {
 		    SEplayer.currentTime = delayedSeek;
 		    delayedSeek = null;
-		} else
+		} else {
 		    localStorage.setItem(document.URL, Math.floor(SEplayer.currentTime));
+		    if (!!track.length)
+		        localStorage.setItem(document.URL + "$percent", Math.floor((SEplayer.currentTime*10000000/track.length)*100));
+		}
 		player.setTrackPosition(SEplayer.currentTime * 1000000);
 		player.setCanSeek(true);
 	    } else

@@ -24,6 +24,15 @@
 
 "use strict";
 
+var sites = [
+  "http://www.jupiterbroadcasting.com",
+  "http://techsnap.systems",
+  "http://jblive.tv",
+  "http://jblive.fm",
+  "http://www.patreon.com/jupitersignal",
+  "http://www.patreon.com/unfilter"
+];
+
 var onYouTubeIframeAPIReady = function() {
     console.log("ERROR: onYouTubeIframeAPIReady called undefined.");
 };
@@ -66,6 +75,77 @@ WebApp._onPageReady = function()
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
 
+    // Add site-selector header
+    var newheader = document.createElement("div");
+    newheader.classList.add("nuvolanav");
+
+    var innerheader = document.createElement("div");
+    innerheader.classList.add("nuvola-slide");
+    innerheader.classList.add("nuvola-slide-closed");
+    newheader.appendChild(innerheader);
+    newheader.addEventListener("mouseover", function() {innerheader.classList.remove("nuvola-slide-closed")})
+    newheader.addEventListener("mouseleave", function() {innerheader.classList.add("nuvola-slide-closed")})
+
+    var selector = document.createElement("select");
+    selector.addEventListener("change", function() {document.location = selector.value;});
+    innerheader.appendChild(selector);
+    sites.forEach(function (site) {
+      var option = document.createElement("option");
+      option.innerText = site;
+      option.value = site;
+      if (document.URL.startsWith(site))
+	option.selected = true;
+      selector.appendChild(option);
+    });
+    var bar = document.createElement("div");
+    bar.classList.add("nuvolatab");
+    bar.innerText = "Nuvola"
+    newheader.appendChild(bar);
+    var body = document.querySelector("body");
+    body.insertBefore(newheader, body.firstChild);
+
+    var css = document.createElement("style");
+    css.type = "text/css";
+    css.innerHTML = `
+      .nuvolatab {
+        background-color: blue;
+        position: relative;
+        left: 45%;
+        width: 10%;
+        height: 1em;
+        text-align: center;
+        color: white;
+        border-bottom-right-radius: 0.5em;
+        border-bottom-left-radius: 0.5em;
+        font-size: 10pt;
+      }
+      .nuvolanav {
+        position: fixed;
+        top: 0;
+        z-index: 10000;
+        width: 100%;
+      }
+      .nuvola-slide {
+        -webkit-transition: max-height 1s;
+        transition: max-height 1s;
+      }
+      .nuvola-slide-closed {
+        max-height: 0;            
+        overflow-y: hidden;
+      }
+      .nuvolanav select {
+        padding: 0.5em;
+        width: 100%;
+        background-color: white;
+        font-size: 12pt;
+      }
+      .nuvolatab, .nuvolanav select {
+        font-family: sans-serif;
+      }
+    `;
+    body.appendChild(css);
+
+    // Detect content
     var ytframe = null;
     var iframes = document.getElementsByTagName('iframe');
     for (var i=0; i < iframes.length; i++) {

@@ -2,7 +2,7 @@
     "id": "jupiter_broadcasting", 
     "name": "Jupiter Broadcasting", 
     "home_url": "http://www.jupiterbroadcasting.com",
-    "allowed_uri": "^http://www.jupiterbroadcasting.com",
+    "allowed_uri": "^https?://(www.jupiterbroadcasting.com|www.patreon.com/(jupitersignal|unfilter|login)|jblive.tv|jblive.fm|techsnap.systems)",
     "maintainer_name": "Andrew Stubbs", 
     "maintainer_link": "https://github.com/a-m-s", 
     "version_major": 1, 

@@ -26,7 +26,10 @@
 
 var sites = [
   "http://www.jupiterbroadcasting.com",
+  "http://linuxactionnews.com",
+  "http://linuxunplugged.com",
   "http://techsnap.systems",
+  "http://coder.show",
   "http://jblive.tv",
   "http://jblive.fm",
   "http://www.patreon.com/jupitersignal",
@@ -188,9 +191,9 @@ WebApp._onPageReady = function()
 	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     } else {
-	var video = document.getElementById("video_html5_api");
-	if (!video)
-	    video = document.querySelector("video");
+	var video = (document.getElementById("video_html5_api")
+	             || document.querySelector("video")
+                     || document.querySelector("audio"));
         if (video) {
 	    SEplayer = video;
 	    delayedSeek = localStorage.getItem(document.URL);
@@ -271,10 +274,13 @@ WebApp.update = function()
         state = PlaybackState.PAUSED;
     }
 
-    var elm = document.querySelector(".thumbnail img");
+    var elm = (document.querySelector(".thumbnail img")
+               || document.querySelector(".fixed-header-logo img"));
     if (elm) {
       track.artLocation = elm.src;
+    }
 
+    if (YTplayer || SEplayer) {
       var pos = document.title.lastIndexOf("|");
       if (pos == -1) {
 	  track.title = document.title;

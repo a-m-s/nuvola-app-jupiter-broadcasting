@@ -36,10 +36,6 @@ var sites = [
   "http://www.patreon.com/unfilter"
 ];
 
-window.onYouTubeIframeAPIReady = function() {
-    console.log("ERROR: onYouTubeIframeAPIReady called undefined.");
-};
-
 // The player variables a global for easier debugging.
 var YTplayer = null;
 var SEplayer = null;

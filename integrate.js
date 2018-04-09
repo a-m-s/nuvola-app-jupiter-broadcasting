@@ -36,7 +36,7 @@ var sites = [
   "http://www.patreon.com/unfilter"
 ];
 
-var onYouTubeIframeAPIReady = function() {
+window.onYouTubeIframeAPIReady = function() {
     console.log("ERROR: onYouTubeIframeAPIReady called undefined.");
 };
 
@@ -175,7 +175,7 @@ WebApp._onPageReady = function()
         ytframe.parentElement.insertBefore(placeholder, ytframe);
         ytframe.remove();
 	
-	onYouTubeIframeAPIReady = function() {
+	window.onYouTubeIframeAPIReady = function() {
 	    YTplayer = new YT.Player('ytnuvola', {
 		height: videoHeight,
 		width: videoWidth,

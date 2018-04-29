@@ -36,9 +36,48 @@ var sites = [
   "http://www.patreon.com/unfilter"
 ];
 
+function progress_key(uri)
+{
+var episode_patterns = {
+  "linuxactionnews": [
+    new RegExp("^https?://linuxactionnews.com/([0-9]+)"),
+    new RegExp("^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)")
+  ]
+}
+
+  for (var show in episode_patterns) {
+    for (var i = 0; i < episode_patterns[show].length; i++) {
+      var match = episode_patterns[show][i].exec(uri);
+      if (match)
+        return show + match[1];
+    }
+  }
+  return uri;
+}
+
+function get_progress_time(uri)
+{
+  var key = progress_key(uri);
+  return localStorage.getItem(key) || localStorage.getItem(uri);
+}
+
+function get_progress_percent(uri)
+{
+  var key = progress_key(uri);
+  return localStorage.getItem(key + "$percent") || localStorage.getItem(uri + "$percent");
+}
+
+function set_progress(uri, time, length)
+{
+  var key = progress_key(uri);
+  localStorage.setItem(key, Math.floor(time));
+  if (!!length)
+    localStorage.setItem(key + "$percent", Math.floor((time*1000000/length)*100));
+}
+
 // The player variables a global for easier debugging.
 var YTplayer = null;
-var SEplayer = null;
+var H5player = null;
 
 (function(Nuvola)
 {
@@ -178,7 +217,7 @@ WebApp._onPageReady = function()
 		videoId: videoId,
 	        playerVars: {
 		  rel: 0,
-		  start: localStorage.getItem(document.URL)
+		  start: get_progress_time(document.URL)
 		}});
 	}
 
@@ -191,17 +230,28 @@ WebApp._onPageReady = function()
 	             || document.querySelector("video")
                      || document.querySelector("audio"));
         if (video) {
-	    SEplayer = video;
-	    delayedSeek = localStorage.getItem(document.URL);
+	    H5player = video;
+	    delayedSeek = get_progress_time(document.URL);
 	}
     }
 
     document.querySelectorAll(".thumbnail a").forEach(function(thumb) {
-	var viewed = thumb.href ? localStorage.getItem(thumb.href + "$percent") : 0;
+	var viewed = thumb.href ? get_progress_percent(thumb.href) : 0;
         if (!viewed) return;
 	var bar = document.createElement('div');
 	bar.setAttribute("style", "display: block; width: " + viewed + "%; height: 0.5em; border-radius: 4px; background-color: green;");
         thumb.append(bar);
+    });
+    document.querySelectorAll(".list-item a").forEach(function(listitem) {
+	var viewed = listitem.href ? get_progress_percent(listitem.href) : 0;
+        if (!viewed) return;
+        var outer = document.createElement("div");
+        outer.setAttribute("style", "display:block; width: 10em; height: 0.5em; border-radius: 4px; background-color: grey;");
+	var bar = document.createElement('div');
+	bar.setAttribute("style", "display: block; width: " + viewed + "%; height: 0.5em; border-radius: 4px; background-color: green;");
+        outer.append(bar);
+        listitem.parentNode.append(document.createElement("br"));
+        listitem.parentNode.append(outer);
     });
 
     // Start update routine
@@ -227,46 +277,38 @@ WebApp.update = function()
 		 : PlaybackState.PAUSED);
 	track.length = YTplayer.getDuration() * 1000000;
 
-	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
-	    localStorage.setItem(document.URL, Math.floor(YTplayer.getCurrentTime()));
-	    if (!!track.length)
-		localStorage.setItem(document.URL + "$percent", Math.floor((YTplayer.getCurrentTime()*1000000/track.length)*100));
-	    player.setTrackPosition(YTplayer.getCurrentTime() * 1000000);
-	    player.setCanSeek(!!track.length);
+        set_progress(document.URL, YTplayer.getCurrentTime(), track.length);
+        player.setTrackPosition(YTplayer.getCurrentTime() * 1000000);
+        player.setCanSeek(!!track.length);
 
-	    if (YTplayer.isMuted())
-		player.updateVolume(0);
-	    else
-		player.updateVolume(YTplayer.getVolume() / 100);
-	    player.setCanChangeVolume(true);
-	}
-    } else if (SEplayer && !!SEplayer.readyState) {
-	state = (SEplayer.paused
+        if (YTplayer.isMuted())
+            player.updateVolume(0);
+        else
+            player.updateVolume(YTplayer.getVolume() / 100);
+        player.setCanChangeVolume(true);
+    } else if (H5player && !!H5player.readyState) {
+	state = (H5player.paused
 		 ? PlaybackState.PAUSED
 	  	 : PlaybackState.PLAYING);
-	track.length = SEplayer.duration * 1000000;
+	track.length = H5player.duration * 1000000;
 
-	if (Nuvola.checkVersion && Nuvola.checkVersion(4, 4, 18)) { // @API 4.5
-	    if (!!SEplayer.duration) {
-		if (delayedSeek) {
-		    SEplayer.currentTime = delayedSeek;
-		    delayedSeek = null;
-		} else {
-		    localStorage.setItem(document.URL, Math.floor(SEplayer.currentTime));
-		    if (!!track.length)
-		        localStorage.setItem(document.URL + "$percent", Math.floor((SEplayer.currentTime*10000000/track.length)*100));
-		}
-		player.setTrackPosition(SEplayer.currentTime * 1000000);
-		player.setCanSeek(true);
-	    } else
-		player.setCanSeek(false);
+      if (!!H5player.duration) {
+        if (delayedSeek) {
+          H5player.currentTime = delayedSeek;
+          delayedSeek = null;
+        } else {
+          set_progress(document.URL, H5player.currentTime, track.length);
+        }
+        player.setTrackPosition(H5player.currentTime * 1000000);
+        player.setCanSeek(true);
+      } else
+        player.setCanSeek(false);
 
-	    if (SEplayer.muted)
-		player.updateVolume(0);
-	    else
-		player.updateVolume(SEplayer.volume);
-	}
-    } else if (SEplayer) {
+      if (H5player.muted)
+        player.updateVolume(0);
+      else
+        player.updateVolume(H5player.volume);
+    } else if (H5player) {
         state = PlaybackState.PAUSED;
     }
 
@@ -276,7 +318,7 @@ WebApp.update = function()
       track.artLocation = elm.src;
     }
 
-    if (YTplayer || SEplayer) {
+    if (YTplayer || H5player) {
       var pos = document.title.lastIndexOf("|");
       if (pos == -1) {
 	  track.title = document.title;
@@ -316,39 +358,39 @@ WebApp._onActionActivated = function(emitter, name, param)
 	    case PlayerAction.STOP:
 		YTplayer.stopVideo();
 		break;
-	    case PlayerAction.SEEK:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+	    case PlayerAction.SEEK:
 		YTplayer.seekTo(param/1000000, true);
 		break;
-	    case PlayerAction.CHANGE_VOLUME:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+	    case PlayerAction.CHANGE_VOLUME:
 		YTplayer.setVolume(param*100);
 		if (YTplayer.isMuted() && param != 0)
 		    YTplayer.unMute();
 		break;
 	}
-    } else if (SEplayer) {
+    } else if (H5player) {
 	switch (name) {
 	    case PlayerAction.TOGGLE_PLAY:
-		if (SEplayer.paused)
-		    SEplayer.play();
+		if (H5player.paused)
+		    H5player.play();
 		else
-		    SEplayer.pause();
+		    H5player.pause();
 		break;
 	    case PlayerAction.PLAY:
-		SEplayer.play();
+		H5player.play();
 		break;
 	    case PlayerAction.PAUSE:
-		SEplayer.pause();
+		H5player.pause();
 		break;
 	    case PlayerAction.STOP:
-		SEplayer.pause();
+		H5player.pause();
 		break;
-	    case PlayerAction.SEEK:  // @API 4.5: undefined & ignored in Nuvola < 4.5
-	        SEplayer.currentTime = param/1000000;
+	    case PlayerAction.SEEK:
+	        H5player.currentTime = param/1000000;
 		break;
-	    case PlayerAction.CHANGE_VOLUME:  // @API 4.5: undefined & ignored in Nuvola < 4.5
-		SEplayer.volume = param;
-		if (SEplayer.muted && param != 0)
-		    SEplayer.muted = false;
+	    case PlayerAction.CHANGE_VOLUME:
+		H5player.volume = param;
+		if (H5player.muted && param != 0)
+		    H5player.muted = false;
 		break;
 	}
     }

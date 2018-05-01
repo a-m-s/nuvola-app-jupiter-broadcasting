@@ -30,6 +30,7 @@ var sites = [
   'http://linuxunplugged.com',
   'http://techsnap.systems',
   'http://coder.show',
+  'http://techtalk.today',
   'http://jblive.tv',
   'http://jblive.fm',
   'http://www.patreon.com/jupitersignal',
@@ -53,6 +54,10 @@ function progressKey (uri) {
     'coderradio': [
       new RegExp('^https?://code.show/([0-9]+)/'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
+    ],
+    'techtalktoday': [
+      new RegExp('^https?://techtalk.today/([0-9]+)/'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
     ]
   }
 

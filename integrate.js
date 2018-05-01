@@ -41,6 +41,18 @@ function progressKey (uri) {
     'linuxactionnews': [
       new RegExp('^https?://linuxactionnews.com/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
+    ],
+    'linuxunplugged': [
+      new RegExp('^https?://linuxunplugged.com/([0-9]+)/'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
+    ],
+    'techsnap': [
+      new RegExp('^https?://techsnap.systems/([0-9]+)/'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
+    ],
+    'coderradio': [
+      new RegExp('^https?://code.show/([0-9]+)/'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
     ]
   }
 
@@ -69,7 +81,7 @@ function setProgress (uri, time, length) {
   var key = progressKey(uri)
   localStorage.setItem(key, Math.floor(time))
   if (length) {
-    localStorage.setItem(key + '$percent', Math.floor((time * 1000000 / length) * 100))
+    localStorage.setItem(key + '$percent', Math.floor((Math.floor(time) / Math.floor(length)) * 100))
   }
 }
 
@@ -270,7 +282,8 @@ var H5player = null;
                  : PlaybackState.PAUSED)
       track.length = YTplayer.getDuration() * 1000000
 
-      setProgress(document.URL, YTplayer.getCurrentTime(), track.length)
+      setProgress(document.URL, YTplayer.getCurrentTime(),
+                  YTplayer.getDuration())
       player.setTrackPosition(YTplayer.getCurrentTime() * 1000000)
       player.setCanSeek(!!track.length)
 
@@ -290,8 +303,8 @@ var H5player = null;
         if (delayedSeek) {
           H5player.currentTime = delayedSeek
           delayedSeek = null
-        } else {
-          setProgress(document.URL, H5player.currentTime, track.length)
+        } else if (state === PlaybackState.PLAYING) {
+          setProgress(document.URL, H5player.currentTime, H5player.duration)
         }
         player.setTrackPosition(H5player.currentTime * 1000000)
         player.setCanSeek(true)

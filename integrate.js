@@ -31,6 +31,7 @@ var sites = [
   'http://techsnap.systems',
   'http://coder.show',
   'http://techtalk.today',
+  'http://podcast.asknoahshow.com',
   'http://jblive.tv',
   'http://jblive.fm',
   'http://www.patreon.com/jupitersignal',
@@ -58,6 +59,10 @@ function progressKey (uri) {
     'techtalktoday': [
       new RegExp('^https?://techtalk.today/([0-9]+)/'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
+    ],
+    'asknoah': [
+      new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)/'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
     ]
   }
 

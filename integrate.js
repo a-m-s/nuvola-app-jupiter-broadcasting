@@ -33,6 +33,7 @@ var sites = [
   'http://techtalk.today',
   'http://podcast.asknoahshow.com',
   'http://www.bsdnow.tv',
+  'http://unfilter.show',
   'http://jblive.tv',
   'http://jblive.fm',
   'http://www.patreon.com/jupitersignal',
@@ -46,28 +47,32 @@ function progressKey (uri) {
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
     ],
     'linuxunplugged': [
-      new RegExp('^https?://linuxunplugged.com/([0-9]+)/'),
+      new RegExp('^https?://linuxunplugged.com/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
     ],
     'techsnap': [
-      new RegExp('^https?://techsnap.systems/([0-9]+)/'),
+      new RegExp('^https?://techsnap.systems/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
     ],
     'coderradio': [
-      new RegExp('^https?://code.show/([0-9]+)/'),
+      new RegExp('^https?://code.show/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
     ],
     'techtalktoday': [
-      new RegExp('^https?://techtalk.today/([0-9]+)/'),
+      new RegExp('^https?://techtalk.today/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
     ],
     'asknoah': [
-      new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)/'),
+      new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
     ],
     'bsdnow': [
       // FIXME: bsdnow.tv doesn't have episode numbers in the URL
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
+    ],
+    'unfilter': [
+      new RegExp('^https?://unfilter.show/([0-9]+)'),
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
     ]
   }
 

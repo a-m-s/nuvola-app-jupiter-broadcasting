@@ -32,6 +32,7 @@ var sites = [
   'http://coder.show',
   'http://techtalk.today',
   'http://podcast.asknoahshow.com',
+  'http://www.bsdnow.tv',
   'http://jblive.tv',
   'http://jblive.fm',
   'http://www.patreon.com/jupitersignal',
@@ -63,6 +64,10 @@ function progressKey (uri) {
     'asknoah': [
       new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)/'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
+    ],
+    'bsdnow': [
+      // FIXME: bsdnow.tv doesn't have episode numbers in the URL
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
     ]
   }
 

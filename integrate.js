@@ -73,6 +73,10 @@ function progressKey (uri) {
     'unfilter': [
       new RegExp('^https?://unfilter.show/([0-9]+)'),
       new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
+    ],
+    'usererror': [
+      // No special site yet
+      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-user-error-([0-9]+)(/|$)')
     ]
   }
 

@@ -1,8 +1,8 @@
 Jupiter Broadcasting Change Log
 ============================
 
-1.2 - unreleased
-----------------
+1.2 - May 8th, 2018
+-------------------
 
   * Save/restore playback position across sessions.
   * Switch to Chromium backend.

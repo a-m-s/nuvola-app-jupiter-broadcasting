@@ -9,4 +9,6 @@ jupiter_broadcasting.tar.gz
 eu.tiliado.WebRuntimeAppJupiterBroadcasting.desktop
 eu.tiliado.WebRuntimeAppJupiterBroadcasting.service
 nuvola-app-jupiter-broadcasting.metainfo.xml
-screenshots/
+/screenshots/
+eu.tiliado.NuvolaAppJupiterBroadcasting.service
+eu.tiliado.WebRuntimeAppJupiterBroadcasting.appdata.xml

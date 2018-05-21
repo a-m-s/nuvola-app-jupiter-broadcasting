@@ -1,16 +1,21 @@
-Jupiter Broadcasting Nuvola Player App
-=============================
+Jupiter Broadcasting • Nuvola Apps Runtime
+=================================
 
 Integration of Jupiter Broadcasting into your linux desktop via
-[Nuvola Player](https://github.com/tiliado/nuvolaplayer).
- 
+[Nuvola Apps Runtime](https://github.com/tiliado/nuvolaruntime).
+
 Support
 -------
 
-Report bugs and issues at <https://github.com/tiliado/nuvola-app-jupiter-broadcasting/issues>.
+Follow [Bug reporting guidelines](https://github.com/tiliado/nuvolaruntime/wiki/Bug-Reporting-Guidelines).
 
 Installation
 ------------
+
+Install the [genuine cross-distribution flatpak packages](https://nuvola.tiliado.eu/app/jupiter_broadcasting/).
+
+Building
+--------
 
 This project uses [Nuvola SDK](https://github.com/tiliado/nuvolasdk#create-new-project). Please refer to
 the [Build a Project Using Nuvola SDK](https://github.com/tiliado/nuvolasdk#build-a-project-using-nuvola-sdk)

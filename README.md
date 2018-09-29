@@ -1,4 +1,4 @@
-Jupiter Broadcasting • Nuvola Apps Runtime
+Jupiter Broadcasting • Nuvola Apps Runtime [![CircleCI](https://circleci.com/gh/tiliado/nuvola-app-jupiter-broadcasting/tree/master.svg?style=svg)](https://circleci.com/gh/tiliado/nuvola-app-jupiter-broadcasting/tree/master)
 =================================
 
 Integration of Jupiter Broadcasting into your linux desktop via

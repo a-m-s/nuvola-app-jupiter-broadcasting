@@ -22,98 +22,100 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-'use strict'
+(function (Nuvola) {
+  'use strict'
 
-var sites = [
-  'http://www.jupiterbroadcasting.com',
-  'http://linuxactionnews.com',
-  'http://linuxunplugged.com',
-  'http://techsnap.systems',
-  'http://coder.show',
-  'http://techtalk.today',
-  'http://podcast.asknoahshow.com',
-  'http://www.bsdnow.tv',
-  'http://unfilter.show',
-  'http://jblive.tv',
-  'http://jblive.fm',
-  'http://www.patreon.com/jupitersignal',
-  'http://www.patreon.com/unfilter'
-]
+  var localStorage = window ? window.localStorage : null
 
-function progressKey (uri) {
-  var episodePatterns = {
-    'linuxactionnews': [
-      new RegExp('^https?://linuxactionnews.com/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
-    ],
-    'linuxunplugged': [
-      new RegExp('^https?://linuxunplugged.com/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
-    ],
-    'techsnap': [
-      new RegExp('^https?://techsnap.systems/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
-    ],
-    'coderradio': [
-      new RegExp('^https?://code.show/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
-    ],
-    'techtalktoday': [
-      new RegExp('^https?://techtalk.today/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
-    ],
-    'asknoah': [
-      new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
-    ],
-    'bsdnow': [
+  var sites = [
+    'http://www.jupiterbroadcasting.com',
+    'http://linuxactionnews.com',
+    'http://linuxunplugged.com',
+    'http://techsnap.systems',
+    'http://coder.show',
+    'http://techtalk.today',
+    'http://podcast.asknoahshow.com',
+    'http://www.bsdnow.tv',
+    'http://unfilter.show',
+    'http://jblive.tv',
+    'http://jblive.fm',
+    'http://www.patreon.com/jupitersignal',
+    'http://www.patreon.com/unfilter'
+  ]
+
+  function progressKey (uri) {
+    var episodePatterns = {
+      'linuxactionnews': [
+        new RegExp('^https?://linuxactionnews.com/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
+      ],
+      'linuxunplugged': [
+        new RegExp('^https?://linuxunplugged.com/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
+      ],
+      'techsnap': [
+        new RegExp('^https?://techsnap.systems/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
+      ],
+      'coderradio': [
+        new RegExp('^https?://code.show/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
+      ],
+      'techtalktoday': [
+        new RegExp('^https?://techtalk.today/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
+      ],
+      'asknoah': [
+        new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
+      ],
+      'bsdnow': [
       // FIXME: bsdnow.tv doesn't have episode numbers in the URL
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
-    ],
-    'unfilter': [
-      new RegExp('^https?://unfilter.show/([0-9]+)'),
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
-    ],
-    'usererror': [
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
+      ],
+      'unfilter': [
+        new RegExp('^https?://unfilter.show/([0-9]+)'),
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
+      ],
+      'usererror': [
       // No special site yet
-      new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-user-error-([0-9]+)(/|$)')
-    ]
-  }
+        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-user-error-([0-9]+)(/|$)')
+      ]
+    }
 
-  for (var show in episodePatterns) {
-    for (var i = 0; i < episodePatterns[show].length; i++) {
-      var match = episodePatterns[show][i].exec(uri)
-      if (match) {
-        return show + match[1]
+    for (var show in episodePatterns) {
+      for (var i = 0; i < episodePatterns[show].length; i++) {
+        var match = episodePatterns[show][i].exec(uri)
+        if (match) {
+          return show + match[1]
+        }
       }
     }
+    return uri
   }
-  return uri
-}
 
-function getProgressTime (uri) {
-  var key = progressKey(uri)
-  return localStorage.getItem(key) || localStorage.getItem(uri)
-}
-
-function getProgressPercent (uri) {
-  var key = progressKey(uri)
-  return localStorage.getItem(key + '$percent') || localStorage.getItem(uri + '$percent')
-}
-
-function setProgress (uri, time, length) {
-  var key = progressKey(uri)
-  localStorage.setItem(key, Math.floor(time))
-  if (length) {
-    localStorage.setItem(key + '$percent', Math.floor((Math.floor(time) / Math.floor(length)) * 100))
+  function getProgressTime (uri) {
+    var key = progressKey(uri)
+    return localStorage.getItem(key) || localStorage.getItem(uri)
   }
-}
+
+  function getProgressPercent (uri) {
+    var key = progressKey(uri)
+    return localStorage.getItem(key + '$percent') || localStorage.getItem(uri + '$percent')
+  }
+
+  function setProgress (uri, time, length) {
+    var key = progressKey(uri)
+    localStorage.setItem(key, Math.floor(time))
+    if (length) {
+      localStorage.setItem(key + '$percent', Math.floor((Math.floor(time) / Math.floor(length)) * 100))
+    }
+  }
 
 // The player variables a global for easier debugging.
-var YTplayer = null
-var H5player = null;
+  var YTplayer = null
+  var H5player = null
 
-(function (Nuvola) {
 // Create media player component
   var player = Nuvola.$object(Nuvola.MediaPlayer)
 
@@ -241,7 +243,7 @@ var H5player = null;
       ytframe.remove()
 
       window.onYouTubeIframeAPIReady = function () {
-        YTplayer = new YT.Player('ytnuvola', {
+        YTplayer = new window.YT.Player('ytnuvola', {
           height: videoHeight,
           width: videoWidth,
           videoId: videoId,

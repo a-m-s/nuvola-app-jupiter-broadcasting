@@ -1,6 +1,13 @@
 Jupiter Broadcasting Change Log
 ============================
 
+1.3 - unreleased
+----------------
+
+  * Add error.show site support.
+  * Remove defunct Unfilter Patreon page.
+  * Switch to https URLs.
+
 1.2 - May 8th, 2018
 -------------------
 

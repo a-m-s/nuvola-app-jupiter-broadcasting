@@ -2,7 +2,7 @@
   "id": "jupiter_broadcasting",
   "name": "Jupiter Broadcasting",
   "home_url": "http://www.jupiterbroadcasting.com",
-  "allowed_uri": "^https?://(www.jupiterbroadcasting.com|www.patreon.com|jblive.tv|jblive.fm|techsnap.systems|coder.show|linuxunplugged.com|linuxactionnews.com|techtalk.today|podcast.asknoahshow.com|(www.)?bsdnow.tv|unfilter.show)",
+  "allowed_uri": "^https?://(www.jupiterbroadcasting.com|www.patreon.com|jblive.tv|jblive.fm|techsnap.systems|coder.show|linuxunplugged.com|linuxactionnews.com|techtalk.today|podcast.asknoahshow.com|(www.)?bsdnow.tv|unfilter.show|error.show)",
   "maintainer_name": "Andrew Stubbs",
   "maintainer_link": "https://github.com/a-m-s",
   "version_major": 1,

@@ -29,18 +29,18 @@
 
   var sites = [
     'http://www.jupiterbroadcasting.com',
-    'http://linuxactionnews.com',
-    'http://linuxunplugged.com',
-    'http://techsnap.systems',
-    'http://coder.show',
-    'http://techtalk.today',
-    'http://podcast.asknoahshow.com',
-    'http://www.bsdnow.tv',
-    'http://unfilter.show',
+    'https://linuxactionnews.com',
+    'https://linuxunplugged.com',
+    'https://techsnap.systems',
+    'https://coder.show',
+    'https://techtalk.today',
+    'https://podcast.asknoahshow.com',
+    'https://www.bsdnow.tv',
+    'https://unfilter.show',
+    'https://error.show',
     'http://jblive.tv',
     'http://jblive.fm',
-    'http://www.patreon.com/jupitersignal',
-    'http://www.patreon.com/unfilter'
+    'https://www.patreon.com/jupitersignal'
   ]
 
   function progressKey (uri) {

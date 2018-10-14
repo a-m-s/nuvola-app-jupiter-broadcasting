@@ -1,8 +1,8 @@
 Jupiter Broadcasting Change Log
 ===============================
 
-1.3 - unreleased
-----------------
+1.3 - October 14th, 2018
+-------------------------
 
   * Nuvola 4.11 is required.
   * Add error.show site support.

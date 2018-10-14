@@ -1,9 +1,10 @@
 Jupiter Broadcasting Change Log
-============================
+===============================
 
 1.3 - unreleased
 ----------------
 
+  * Nuvola 4.11 is required.
   * Add error.show site support.
   * Remove defunct Unfilter Patreon page.
   * Switch to https URLs.

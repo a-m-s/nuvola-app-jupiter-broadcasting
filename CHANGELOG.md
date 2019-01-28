@@ -5,6 +5,7 @@ Jupiter Broadcasting Change Log
 ----------------
 
   * Add chooselinux.show site support.
+  * Fix volume controls for non-YouTube media.
 
 1.3 - October 14th, 2018
 -------------------------

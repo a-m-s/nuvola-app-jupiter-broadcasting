@@ -344,6 +344,7 @@
       } else {
         player.updateVolume(H5player.volume)
       }
+      player.setCanChangeVolume(true)
     } else if (H5player) {
       state = PlaybackState.PAUSED
     }

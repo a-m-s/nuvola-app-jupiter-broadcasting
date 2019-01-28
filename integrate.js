@@ -113,24 +113,24 @@
     }
   }
 
-// The player variables a global for easier debugging.
+  // The player variables a global for easier debugging.
   var YTplayer = null
   var H5player = null
 
-// Create media player component
+  // Create media player component
   var player = Nuvola.$object(Nuvola.MediaPlayer)
 
-// Handy aliases
+  // Handy aliases
   var PlaybackState = Nuvola.PlaybackState
   var PlayerAction = Nuvola.PlayerAction
 
-// Create new WebApp prototype
+  // Create new WebApp prototype
   var WebApp = Nuvola.$WebApp()
 
-// Delayed seek (for when the video is not yet seekable)
+  // Delayed seek (for when the video is not yet seekable)
   var delayedSeek = null
 
-// Initialization routines
+  // Initialization routines
   WebApp._onInitWebWorker = function (emitter) {
     Nuvola.WebApp._onInitWebWorker.call(this, emitter)
 
@@ -142,7 +142,7 @@
     }
   }
 
-// Page is ready for magic
+  // Page is ready for magic
   WebApp._onPageReady = function () {
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect('ActionActivated', this)
@@ -226,14 +226,14 @@
       }
     }
     if (ytframe) {
-        // This is YouTube content
+      // This is YouTube content
       var urlelms = ytframe.src.split('/')
 
       var videoId = urlelms[urlelms.length - 1].split('?')[0]
       var videoWidth = ytframe.width
       var videoHeight = ytframe.height
 
-        // Delete the existing iframe, and create a new one
+      // Delete the existing iframe, and create a new one
       var placeholder = document.createElement('div')
       placeholder.id = 'ytnuvola'
       placeholder.className = ytframe.className
@@ -251,7 +251,7 @@
           playerVars: {
             rel: 0,
             start: getProgressTime(document.URL)
-          }})
+          } })
       }
 
       var tag = document.createElement('script')
@@ -291,7 +291,7 @@
     this.update()
   }
 
-// Extract data from the web page
+  // Extract data from the web page
   WebApp.update = function () {
     var track = {
       title: null,
@@ -305,12 +305,12 @@
 
     if (YTplayer && YTplayer.getPlayerState) {
       state = (YTplayer.getPlayerState() === 1
-                 ? PlaybackState.PLAYING
-                 : PlaybackState.PAUSED)
+        ? PlaybackState.PLAYING
+        : PlaybackState.PAUSED)
       track.length = YTplayer.getDuration() * 1000000
 
       setProgress(document.URL, YTplayer.getCurrentTime(),
-                  YTplayer.getDuration())
+        YTplayer.getDuration())
       player.setTrackPosition(YTplayer.getCurrentTime() * 1000000)
       player.setCanSeek(!!track.length)
 
@@ -322,8 +322,8 @@
       player.setCanChangeVolume(true)
     } else if (H5player && !!H5player.readyState) {
       state = (H5player.paused
-                 ? PlaybackState.PAUSED
-                 : PlaybackState.PLAYING)
+        ? PlaybackState.PAUSED
+        : PlaybackState.PLAYING)
       track.length = H5player.duration * 1000000
 
       if (H5player.duration) {
@@ -374,7 +374,7 @@
     setTimeout(this.update.bind(this), 500)
   }
 
-// Handler of playback actions
+  // Handler of playback actions
   WebApp._onActionActivated = function (emitter, name, param) {
     if (YTplayer) {
       switch (name) {
@@ -437,4 +437,4 @@
   }
 
   WebApp.start()
-})(this)  // function(Nuvola)
+})(this) // function(Nuvola)

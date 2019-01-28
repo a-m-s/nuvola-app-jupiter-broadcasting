@@ -1,6 +1,11 @@
 Jupiter Broadcasting Change Log
 ===============================
 
+1.4 - unreleased
+----------------
+
+  * Add chooselinux.show site support.
+
 1.3 - October 14th, 2018
 -------------------------
 

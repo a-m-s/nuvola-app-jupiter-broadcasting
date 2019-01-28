@@ -38,6 +38,7 @@
     'https://www.bsdnow.tv',
     'https://unfilter.show',
     'https://error.show',
+    'https://chooselinux.show',
     'http://jblive.tv',
     'http://jblive.fm',
     'https://www.patreon.com/jupitersignal'

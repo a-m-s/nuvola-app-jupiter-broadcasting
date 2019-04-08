@@ -1,6 +1,11 @@
 Jupiter Broadcasting Change Log
 ===============================
 
+1.5 - unreleased
+----------------
+
+  * Update following JB site redesign.
+
 1.4 - February 24th, 2019
 --------------------------
 

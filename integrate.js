@@ -208,7 +208,7 @@
         padding: 0.5em;
         width: 100%;
         background-color: white;
-	color: black;
+        color: black;
         font-size: 12pt;
       }
       .nuvolatab, .nuvolanav select {

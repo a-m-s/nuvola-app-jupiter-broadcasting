@@ -39,6 +39,7 @@
     'https://unfilter.show',
     'https://error.show',
     'https://chooselinux.show',
+    'https://fridaystream.com',
     'http://jblive.tv',
     'http://jblive.fm',
     'https://www.patreon.com/jupitersignal'

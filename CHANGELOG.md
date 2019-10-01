@@ -6,6 +6,8 @@ Jupiter Broadcasting Change Log
 
   * Update following JB site redesign.
   * Add the Friday Stream.
+  * Add Jupiter Extras.
+  * Add Linux Headlines.
 
 1.4 - February 24th, 2019
 --------------------------

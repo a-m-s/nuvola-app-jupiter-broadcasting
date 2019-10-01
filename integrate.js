@@ -40,6 +40,8 @@
     'https://error.show',
     'https://chooselinux.show',
     'https://fridaystream.com',
+    'https://linuxheadlines.show',
+    'https://extras.show',
     'http://jblive.tv',
     'http://jblive.fm',
     'https://www.patreon.com/jupitersignal'

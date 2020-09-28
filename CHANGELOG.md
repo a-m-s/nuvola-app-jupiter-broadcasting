@@ -1,8 +1,8 @@
 Jupiter Broadcasting Change Log
 ===============================
 
-1.5 - unreleased
-----------------
+1.5 - September 28, 2020
+------------------------
 
   * Update following JB site redesign.
   * Add the Friday Stream.

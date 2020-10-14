@@ -49,39 +49,39 @@
 
   function progressKey (uri) {
     var episodePatterns = {
-      'linuxactionnews': [
+      linuxactionnews: [
         new RegExp('^https?://linuxactionnews.com/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
       ],
-      'linuxunplugged': [
+      linuxunplugged: [
         new RegExp('^https?://linuxunplugged.com/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
       ],
-      'techsnap': [
+      techsnap: [
         new RegExp('^https?://techsnap.systems/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
       ],
-      'coderradio': [
+      coderradio: [
         new RegExp('^https?://code.show/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
       ],
-      'techtalktoday': [
+      techtalktoday: [
         new RegExp('^https?://techtalk.today/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
       ],
-      'asknoah': [
+      asknoah: [
         new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
       ],
-      'bsdnow': [
+      bsdnow: [
       // FIXME: bsdnow.tv doesn't have episode numbers in the URL
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
       ],
-      'unfilter': [
+      unfilter: [
         new RegExp('^https?://unfilter.show/([0-9]+)'),
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
       ],
-      'usererror': [
+      usererror: [
       // No special site yet
         new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-user-error-([0-9]+)(/|$)')
       ]

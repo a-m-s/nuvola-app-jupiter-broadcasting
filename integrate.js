@@ -25,9 +25,9 @@
 (function (Nuvola) {
   'use strict'
 
-  var localStorage = window ? window.localStorage : null
+  const localStorage = window ? window.localStorage : null
 
-  var sites = [
+  const sites = [
     'http://www.jupiterbroadcasting.com',
     'https://linuxactionnews.com',
     'https://linuxunplugged.com',
@@ -48,48 +48,48 @@
   ]
 
   function progressKey (uri) {
-    var episodePatterns = {
+    const episodePatterns = {
       linuxactionnews: [
-        new RegExp('^https?://linuxactionnews.com/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/linux-action-news-([0-9]+)')
+        /^https?:\/\/linuxactionnews.com\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/linux-action-news-([0-9]+)/
       ],
       linuxunplugged: [
-        new RegExp('^https?://linuxunplugged.com/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-lup-([0-9]+)')
+        /^https?:\/\/linuxunplugged.com\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-lup-([0-9]+)/
       ],
       techsnap: [
-        new RegExp('^https?://techsnap.systems/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-techsnap-([0-9]+)')
+        /^https?:\/\/techsnap.systems\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-techsnap-([0-9]+)/
       ],
       coderradio: [
-        new RegExp('^https?://code.show/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-cr-([0-9]+)(/|$)')
+        /^https?:\/\/code.show\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-cr-([0-9]+)(\/|$)/
       ],
       techtalktoday: [
-        new RegExp('^https?://techtalk.today/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/tech-talk-today-([0-9]+)(/|$)')
+        /^https?:\/\/techtalk.today\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/tech-talk-today-([0-9]+)(\/|$)/
       ],
       asknoah: [
-        new RegExp('^https?://podcast.asknoahshow.com/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-ask-noah-([0-9]+)(/|$)')
+        /^https?:\/\/podcast.asknoahshow.com\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-ask-noah-([0-9]+)(\/|$)/
       ],
       bsdnow: [
       // FIXME: bsdnow.tv doesn't have episode numbers in the URL
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-bsd-now-([0-9]+)(/|$)')
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-bsd-now-([0-9]+)(\/|$)/
       ],
       unfilter: [
-        new RegExp('^https?://unfilter.show/([0-9]+)'),
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-unfilter-([0-9]+)(/|$)')
+        /^https?:\/\/unfilter.show\/([0-9]+)/,
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-unfilter-([0-9]+)(\/|$)/
       ],
       usererror: [
       // No special site yet
-        new RegExp('^https?://www.jupiterbroadcasting.com/[0-9]+/.*-user-error-([0-9]+)(/|$)')
+        /^https?:\/\/www.jupiterbroadcasting.com\/[0-9]+\/.*-user-error-([0-9]+)(\/|$)/
       ]
     }
 
-    for (var show in episodePatterns) {
-      for (var i = 0; i < episodePatterns[show].length; i++) {
-        var match = episodePatterns[show][i].exec(uri)
+    for (const show in episodePatterns) {
+      for (let i = 0; i < episodePatterns[show].length; i++) {
+        const match = episodePatterns[show][i].exec(uri)
         if (match) {
           return show + match[1]
         }
@@ -99,17 +99,17 @@
   }
 
   function getProgressTime (uri) {
-    var key = progressKey(uri)
+    const key = progressKey(uri)
     return localStorage.getItem(key) || localStorage.getItem(uri)
   }
 
   function getProgressPercent (uri) {
-    var key = progressKey(uri)
+    const key = progressKey(uri)
     return localStorage.getItem(key + '$percent') || localStorage.getItem(uri + '$percent')
   }
 
   function setProgress (uri, time, length) {
-    var key = progressKey(uri)
+    const key = progressKey(uri)
     localStorage.setItem(key, Math.floor(time))
     if (length) {
       localStorage.setItem(key + '$percent', Math.floor((Math.floor(time) / Math.floor(length)) * 100))
@@ -117,27 +117,27 @@
   }
 
   // The player variables a global for easier debugging.
-  var YTplayer = null
-  var H5player = null
+  let YTplayer = null
+  let H5player = null
 
   // Create media player component
-  var player = Nuvola.$object(Nuvola.MediaPlayer)
+  const player = Nuvola.$object(Nuvola.MediaPlayer)
 
   // Handy aliases
-  var PlaybackState = Nuvola.PlaybackState
-  var PlayerAction = Nuvola.PlayerAction
+  const PlaybackState = Nuvola.PlaybackState
+  const PlayerAction = Nuvola.PlayerAction
 
   // Create new WebApp prototype
-  var WebApp = Nuvola.$WebApp()
+  const WebApp = Nuvola.$WebApp()
 
   // Delayed seek (for when the video is not yet seekable)
-  var delayedSeek = null
+  let delayedSeek = null
 
   // Initialization routines
   WebApp._onInitWebWorker = function (emitter) {
     Nuvola.WebApp._onInitWebWorker.call(this, emitter)
 
-    var state = document.readyState
+    const state = document.readyState
     if (state === 'interactive' || state === 'complete') {
       this._onPageReady()
     } else {
@@ -151,34 +151,34 @@
     Nuvola.actions.connect('ActionActivated', this)
 
     // Add site-selector header
-    var newheader = document.createElement('div')
+    const newheader = document.createElement('div')
     newheader.classList.add('nuvolanav')
 
-    var innerheader = document.createElement('div')
+    const innerheader = document.createElement('div')
     innerheader.classList.add('nuvola-slide')
     innerheader.classList.add('nuvola-slide-closed')
     newheader.appendChild(innerheader)
     newheader.addEventListener('mouseover', function () { innerheader.classList.remove('nuvola-slide-closed') })
     newheader.addEventListener('mouseleave', function () { innerheader.classList.add('nuvola-slide-closed') })
 
-    var selector = document.createElement('select')
+    const selector = document.createElement('select')
     selector.addEventListener('change', function () { document.location = selector.value })
     innerheader.appendChild(selector)
     sites.forEach(function (site) {
-      var option = document.createElement('option')
+      const option = document.createElement('option')
       option.innerText = site
       option.value = site
       if (document.URL.startsWith(site)) { option.selected = true }
       selector.appendChild(option)
     })
-    var bar = document.createElement('div')
+    const bar = document.createElement('div')
     bar.classList.add('nuvolatab')
     bar.innerText = 'Nuvola'
     newheader.appendChild(bar)
-    var body = document.querySelector('body')
+    const body = document.querySelector('body')
     body.insertBefore(newheader, body.firstChild)
 
-    var css = document.createElement('style')
+    const css = document.createElement('style')
     css.type = 'text/css'
     css.innerHTML = `
       .nuvolatab {
@@ -204,7 +204,7 @@
         transition: max-height 1s;
       }
       .nuvola-slide-closed {
-        max-height: 0;            
+        max-height: 0;
         overflow-y: hidden;
       }
       .nuvolanav select {
@@ -221,9 +221,9 @@
     body.appendChild(css)
 
     // Detect content
-    var ytframe = null
-    var iframes = document.getElementsByTagName('iframe')
-    for (var i = 0; i < iframes.length; i++) {
+    let ytframe = null
+    const iframes = document.getElementsByTagName('iframe')
+    for (let i = 0; i < iframes.length; i++) {
       if (iframes[i].src && iframes[i].src.indexOf('youtube.com') >= 0) {
         ytframe = iframes[i]
         break
@@ -231,14 +231,14 @@
     }
     if (ytframe) {
       // This is YouTube content
-      var urlelms = ytframe.src.split('/')
+      const urlelms = ytframe.src.split('/')
 
-      var videoId = urlelms[urlelms.length - 1].split('?')[0]
-      var videoWidth = ytframe.width
-      var videoHeight = ytframe.height
+      const videoId = urlelms[urlelms.length - 1].split('?')[0]
+      const videoWidth = ytframe.width
+      const videoHeight = ytframe.height
 
       // Delete the existing iframe, and create a new one
-      var placeholder = document.createElement('div')
+      const placeholder = document.createElement('div')
       placeholder.id = 'ytnuvola'
       placeholder.className = ytframe.className
       placeholder.style.height = ytframe.style.height
@@ -255,15 +255,16 @@
           playerVars: {
             rel: 0,
             start: getProgressTime(document.URL)
-          } })
+          }
+        })
       }
 
-      var tag = document.createElement('script')
+      const tag = document.createElement('script')
       tag.src = 'https://www.youtube.com/iframe_api'
-      var firstScriptTag = document.getElementsByTagName('script')[0]
+      const firstScriptTag = document.getElementsByTagName('script')[0]
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
     } else {
-      var video = (document.getElementById('video_html5_api') ||
+      const video = (document.getElementById('video_html5_api') ||
                      document.querySelector('video') ||
                      document.querySelector('audio'))
       if (video) {
@@ -273,18 +274,18 @@
     }
 
     document.querySelectorAll('.thumbnail a').forEach(function (thumb) {
-      var viewed = thumb.href ? getProgressPercent(thumb.href) : 0
+      const viewed = thumb.href ? getProgressPercent(thumb.href) : 0
       if (!viewed) return
-      var bar = document.createElement('div')
+      const bar = document.createElement('div')
       bar.setAttribute('style', 'display: block; width: ' + viewed + '%; height: 0.5em; border-radius: 4px; background-color: green;')
       thumb.append(bar)
     })
     document.querySelectorAll('.list-item a').forEach(function (listitem) {
-      var viewed = listitem.href ? getProgressPercent(listitem.href) : 0
+      const viewed = listitem.href ? getProgressPercent(listitem.href) : 0
       if (!viewed) return
-      var outer = document.createElement('div')
+      const outer = document.createElement('div')
       outer.setAttribute('style', 'display:block; width: 10em; height: 0.5em; border-radius: 4px; background-color: grey;')
-      var bar = document.createElement('div')
+      const bar = document.createElement('div')
       bar.setAttribute('style', 'display: block; width: ' + viewed + '%; height: 0.5em; border-radius: 4px; background-color: green;')
       outer.append(bar)
       listitem.parentNode.append(document.createElement('br'))
@@ -297,7 +298,7 @@
 
   // Extract data from the web page
   WebApp.update = function () {
-    var track = {
+    const track = {
       title: null,
       artist: null,
       album: null,
@@ -305,7 +306,7 @@
       rating: null,
       length: null
     }
-    var state = PlaybackState.UNKNOWN
+    let state = PlaybackState.UNKNOWN
 
     if (YTplayer && YTplayer.getPlayerState) {
       state = (YTplayer.getPlayerState() === 1
@@ -353,14 +354,14 @@
       state = PlaybackState.PAUSED
     }
 
-    var elm = (document.querySelector('.thumbnail img') ||
+    const elm = (document.querySelector('.thumbnail img') ||
                document.querySelector('.fixed-header-logo img'))
     if (elm) {
       track.artLocation = elm.src
     }
 
     if (YTplayer || H5player) {
-      var pos = document.title.lastIndexOf('|')
+      const pos = document.title.lastIndexOf('|')
       if (pos === -1) {
         track.title = document.title
       } else {
@@ -382,14 +383,15 @@
   WebApp._onActionActivated = function (emitter, name, param) {
     if (YTplayer) {
       switch (name) {
-        case PlayerAction.TOGGLE_PLAY:
-          var state = YTplayer.getPlayerState()
+        case PlayerAction.TOGGLE_PLAY: {
+          const state = YTplayer.getPlayerState()
           if (state !== 1 && state !== 3) {
             YTplayer.playVideo()
           } else {
             YTplayer.pauseVideo()
           }
           break
+        }
         case PlayerAction.PLAY:
           YTplayer.playVideo()
           break

@@ -1,6 +1,11 @@
 Jupiter Broadcasting Change Log
 ===============================
 
+1.6 - April 11th, 2021
+----------------------
+
+ * Reformat code
+
 1.5 - September 28, 2020
 ------------------------
 
